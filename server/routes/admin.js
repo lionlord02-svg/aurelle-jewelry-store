@@ -1,5 +1,5 @@
 import express from 'express';
-import { getDb } from '../db.js';
+import { db, newId } from '../db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -18,15 +18,15 @@ const requireAdmin = (req, res, next) => {
   }
 };
 
-// Setup first admin (only works if no admin exists)
+// Setup first admin
 router.post('/setup', async (req, res) => {
   try {
-    const db = getDb();
-    const existing = db.prepare('SELECT * FROM admins LIMIT 1').get();
-    if (existing) return res.status(400).json({ error: 'Admin already exists' });
+    await db.read();
+    if (db.data.admin) return res.status(400).json({ error: 'Admin already exists' });
     const { email, password } = req.body;
     const hash = await bcrypt.hash(password, 10);
-    db.prepare('INSERT INTO admins (email, password) VALUES (?, ?)').run(email, hash);
+    db.data.admin = { email, password: hash };
+    await db.write();
     res.json({ success: true, message: 'Admin created!' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -36,14 +36,18 @@ router.post('/setup', async (req, res) => {
 // Admin login
 router.post('/login', async (req, res) => {
   try {
-    const db = getDb();
+    await db.read();
     const { email, password } = req.body;
-    const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(email);
-    if (!admin) return res.status(401).json({ error: 'Invalid credentials' });
+    const admin = db.data.admin;
+    if (!admin || admin.email !== email)
+      return res.status(401).json({ error: 'Invalid credentials' });
     const valid = await bcrypt.compare(password, admin.password);
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
-    const token = jwt.sign({ id: admin.id, email: admin.email, isAdmin: true },
-      process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const token = jwt.sign(
+      { email: admin.email, isAdmin: true },
+      process.env.JWT_SECRET || 'secret',
+      { expiresIn: '7d' }
+    );
     res.json({ token });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -51,50 +55,52 @@ router.post('/login', async (req, res) => {
 });
 
 // Get all products
-router.get('/products', requireAdmin, (req, res) => {
-  const db = getDb();
-  const products = db.prepare('SELECT * FROM products ORDER BY created_at DESC').all();
-  res.json(products);
+router.get('/products', requireAdmin, async (req, res) => {
+  await db.read();
+  res.json(db.data.products);
 });
 
 // Add product
-router.post('/products', requireAdmin, (req, res) => {
-  const db = getDb();
+router.post('/products', requireAdmin, async (req, res) => {
+  await db.read();
   const { name, description, price, category, image_url, stock } = req.body;
-  const result = db.prepare(
-    'INSERT INTO products (name, description, price, category, image_url, stock) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(name, description, price, category, image_url, stock || 0);
-  res.json({ id: result.lastInsertRowid, message: 'Product added!' });
+  const product = { id: newId(), name, description, price, category, image_url, stock: stock || 0 };
+  db.data.products.push(product);
+  await db.write();
+  res.json({ product, message: 'Product added!' });
 });
 
 // Update product
-router.put('/products/:id', requireAdmin, (req, res) => {
-  const db = getDb();
-  const { name, description, price, category, image_url, stock } = req.body;
-  db.prepare(
-    'UPDATE products SET name=?, description=?, price=?, category=?, image_url=?, stock=? WHERE id=?'
-  ).run(name, description, price, category, image_url, stock, req.params.id);
+router.put('/products/:id', requireAdmin, async (req, res) => {
+  await db.read();
+  const index = db.data.products.findIndex(p => p.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Product not found' });
+  db.data.products[index] = { ...db.data.products[index], ...req.body };
+  await db.write();
   res.json({ message: 'Product updated!' });
 });
 
 // Delete product
-router.delete('/products/:id', requireAdmin, (req, res) => {
-  const db = getDb();
-  db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
+router.delete('/products/:id', requireAdmin, async (req, res) => {
+  await db.read();
+  db.data.products = db.data.products.filter(p => p.id !== req.params.id);
+  await db.write();
   res.json({ message: 'Product deleted!' });
 });
 
 // Get all orders
-router.get('/orders', requireAdmin, (req, res) => {
-  const db = getDb();
-  const orders = db.prepare('SELECT * FROM orders ORDER BY created_at DESC').all();
-  res.json(orders);
+router.get('/orders', requireAdmin, async (req, res) => {
+  await db.read();
+  res.json(db.data.orders);
 });
 
 // Update order status
-router.put('/orders/:id/status', requireAdmin, (req, res) => {
-  const db = getDb();
-  db.prepare('UPDATE orders SET status=? WHERE id=?').run(req.body.status, req.params.id);
+router.put('/orders/:id/status', requireAdmin, async (req, res) => {
+  await db.read();
+  const order = db.data.orders.find(o => o.id === req.params.id);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+  order.status = req.body.status;
+  await db.write();
   res.json({ message: 'Order updated!' });
 });
 
