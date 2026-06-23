@@ -3,10 +3,13 @@ import { JSONFile } from 'lowdb/node';
 import { nanoid } from 'nanoid';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { mkdirSync } from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const file = path.join(__dirname, 'data', 'db.json');
+const dataDir = path.join(__dirname, 'data');
+const file = path.join(dataDir, 'db.json');
 
+mkdirSync(dataDir, { recursive: true });
 const defaultData = {
   products: [],
   orders: [],
