@@ -126,8 +126,8 @@ router.post('/webhook', express.json(), async (req, res) => {
           product.stock = Math.max(0, product.stock - item.quantity);
         }
       }
-
       await db.write();
+      
       // Send confirmation email
       try {
         const { sendOrderConfirmationEmail } = await import('../email.js');
