@@ -11,6 +11,8 @@ import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import OrderConfirmation from './pages/OrderConfirmation';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -39,7 +41,8 @@ export default function App() {
             <Route path="/product/:id" element={<StoreLayout><ProductDetail /></StoreLayout>} />
             <Route path="/cart" element={<StoreLayout><Cart /></StoreLayout>} />
             <Route path="/order-confirmation" element={<StoreLayout><OrderConfirmation /></StoreLayout>} />
-
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             {/* Admin */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
