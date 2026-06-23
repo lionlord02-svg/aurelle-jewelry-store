@@ -129,3 +129,92 @@
     letter-spacing: 0.06em;
   }
 }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  color: #1a1a1a;
+}
+
+.icon-btn:hover {
+  color: #666;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  border: none;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  outline: none;
+  width: 180px;
+  background: transparent;
+}
+
+.search-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  color: #666;
+}
+
+.auth-link--register {
+  border: 1px solid #1a1a1a;
+  padding: 4px 10px;
+}
+
+.auth-link--register:hover {
+  background: #1a1a1a;
+  color: white;
+}
+
+.customer-name {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.auth-link-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  text-decoration: underline;
+}
