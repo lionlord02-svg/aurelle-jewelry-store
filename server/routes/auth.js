@@ -59,4 +59,48 @@ router.get('/me', requireAdmin, async (req, res) => {
   res.json({ username: req.admin.username });
 });
 
+
+// POST /api/auth/register - Customer registration
+router.post('/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  }
+  await db.read();
+  db.data.customers = db.data.customers || [];
+  const exists = db.data.customers.find(c => c.email === email);
+  if (exists) {
+    return res.status(400).json({ error: 'Email already registered.' });
+  }
+  const passwordHash = await hashPassword(password);
+  const customer = { id: Date.now().toString(), name, email, passwordHash, createdAt: new Date().toISOString() };
+  db.data.customers.push(customer);
+  await db.write();
+  const token = signToken({ role: 'customer', id: customer.id, email, name });
+  res.status(201).json({ token, user: { id: customer.id, name, email } });
+});
+
+// POST /api/auth/customer-login - Customer login
+router.post('/customer-login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required.' });
+  }
+  await db.read();
+  db.data.customers = db.data.customers || [];
+  const customer = db.data.customers.find(c => c.email === email);
+  if (!customer) {
+    return res.status(401).json({ error: 'Invalid email or password.' });
+  }
+  const valid = await verifyPassword(password, customer.passwordHash);
+  if (!valid) {
+    return res.status(401).json({ error: 'Invalid email or password.' });
+  }
+  const token = signToken({ role: 'customer', id: customer.id, email, name: customer.name });
+  res.json({ token, user: { id: customer.id, name: customer.name, email } });
+});
+
 export default router;
