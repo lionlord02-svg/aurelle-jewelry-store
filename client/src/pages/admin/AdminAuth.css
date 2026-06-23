@@ -1,0 +1,67 @@
+.admin-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  padding: 24px;
+}
+
+.admin-auth__card {
+  background: var(--bone);
+  padding: 48px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-md);
+}
+
+.admin-auth__card h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  margin: 8px 0 8px;
+}
+
+.admin-auth__hint {
+  font-size: 13px;
+  color: var(--grey);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.admin-auth__card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.admin-auth__card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grey);
+}
+
+.admin-auth__card input {
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--white);
+}
+
+.admin-auth__error {
+  background: rgba(92, 31, 31, 0.08);
+  color: var(--oxblood);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.admin-auth__card .btn {
+  margin-top: 8px;
+}

@@ -1,0 +1,116 @@
+.product-card {
+  display: block;
+  color: var(--ink);
+}
+
+.product-card__frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bone-dim);
+  border: 1px solid var(--line);
+}
+
+.product-card__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card:hover .product-card__frame img {
+  transform: scale(1.06);
+}
+
+/* Jeweler's-loupe brackets: hidden corner marks that snap into view on
+   hover, like the frame of a loupe settling onto the piece. */
+.product-card__bracket {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--brass);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.product-card__bracket--tl {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+  transform: translate(-4px, -4px);
+}
+.product-card__bracket--tr {
+  top: 10px;
+  right: 10px;
+  border-left: none;
+  border-bottom: none;
+  transform: translate(4px, -4px);
+}
+.product-card__bracket--bl {
+  bottom: 10px;
+  left: 10px;
+  border-right: none;
+  border-top: none;
+  transform: translate(-4px, 4px);
+}
+.product-card__bracket--br {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
+  transform: translate(4px, 4px);
+}
+
+.product-card:hover .product-card__bracket {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.product-card__sold-out {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--ink);
+  color: var(--bone);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+}
+
+.product-card__info {
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-card__category {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+.product-card__name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.product-card__price {
+  font-size: 14px;
+  color: var(--brass);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card__bracket {
+    transition: opacity 0.3s ease;
+  }
+}
