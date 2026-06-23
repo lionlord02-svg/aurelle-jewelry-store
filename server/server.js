@@ -7,7 +7,7 @@ import productsRouter from './routes/products.js';
 import authRouter from './routes/auth.js';
 import checkoutRouter from './routes/checkout.js';
 import ordersRouter from './routes/orders.js';
-
+import adminRouter from './routes/admin.js';
 dotenv.config();
 
 const app = express();
@@ -26,7 +26,7 @@ app.use('/api/products', productsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/checkout', checkoutRouter);
 app.use('/api/orders', ordersRouter);
-
+app.use('/api/admin', adminRouter);
 // Centralized error handler — keeps internal error details out of responses
 app.use((err, req, res, next) => {
   console.error(err);
