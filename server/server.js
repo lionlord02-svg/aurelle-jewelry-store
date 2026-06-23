@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initDb, seedProducts } from './db.js';
+import { initDb } from './db.js';
 
 import productsRouter from './routes/products.js';
 import authRouter from './routes/auth.js';
@@ -35,7 +35,6 @@ app.use((err, req, res, next) => {
 
 async function start() {
   await initDb();
-  await seedProducts();
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
