@@ -128,6 +128,17 @@ router.post('/webhook', express.json(), async (req, res) => {
       }
 
       await db.write();
+      // Send confirmation email
+      try {
+        const { sendOrderConfirmationEmail } = await import('../email.js');
+        await sendOrderConfirmationEmail(
+          order,
+          order.customerEmail || 'customer@example.com',
+          order.customerName || 'Valued Customer'
+        );
+      } catch (e) {
+        console.error('Email error:', e.message);
+      }
     }
 
     res.json({ received: true });
