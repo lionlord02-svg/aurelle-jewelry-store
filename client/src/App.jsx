@@ -13,7 +13,7 @@ import Cart from './pages/Cart';
 import OrderConfirmation from './pages/OrderConfirmation';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
+import Search from './pages/Search';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminProducts from './pages/admin/AdminProducts';
@@ -43,6 +43,7 @@ export default function App() {
             <Route path="/order-confirmation" element={<StoreLayout><OrderConfirmation /></StoreLayout>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/search" element={<StoreLayout><Search /></StoreLayout>} />
             {/* Admin */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
